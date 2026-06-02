@@ -1,0 +1,74 @@
+startDelaySeconds: 0
+ssl: false
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+
+rules:
+  # ── Batching ──────────────────────────────────────────────────────────────
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>batch-size-avg'
+    name: kafka_producer_batch_size_avg_bytes
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>batch-size-max'
+    name: kafka_producer_batch_size_max_bytes
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>records-per-request-avg'
+    name: kafka_producer_records_per_request_avg
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  # ── Linger / queue time ───────────────────────────────────────────────────
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>record-queue-time-avg'
+    name: kafka_producer_record_queue_time_avg_ms
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>record-queue-time-max'
+    name: kafka_producer_record_queue_time_max_ms
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  # ── Network / throughput ──────────────────────────────────────────────────
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>request-rate'
+    name: kafka_producer_request_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>record-send-rate'
+    name: kafka_producer_record_send_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>outgoing-byte-rate'
+    name: kafka_producer_outgoing_byte_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>connection-count'
+    name: kafka_producer_connection_count
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>connection-creation-rate'
+    name: kafka_producer_connection_creation_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.producer<type=producer-metrics, client-id=(.+)><>connection-close-rate'
+    name: kafka_producer_connection_close_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE

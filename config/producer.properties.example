@@ -1,0 +1,31 @@
+# =========================================================================
+# Producer Config — copy to producer.properties and fill in your values
+# Run: terraform output -json | jq '.'
+# =========================================================================
+
+# Profile to run: SLOW | FAST
+profile=SLOW
+
+# ---- Connection ----
+bootstrap.servers=<bootstrap_server>
+schema.registry.url=<schema_registry_url>
+
+# ---- Security (shared) ----
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+
+# ---- Serializers ----
+key.serializer=org.apache.kafka.common.serialization.StringSerializer
+value.serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
+
+# ---- Slow Producer Credentials ----
+slow.kafka.api.key=<producer_api_key_slow>
+slow.kafka.api.secret=<producer_api_secret_slow>
+slow.sr.api.key=<producer_sr_api_key_slow>
+slow.sr.api.secret=<producer_sr_api_secret_slow>
+
+# ---- Fast Producer Credentials ----
+fast.kafka.api.key=<producer_api_key_fast>
+fast.kafka.api.secret=<producer_api_secret_fast>
+fast.sr.api.key=<producer_sr_api_key_fast>
+fast.sr.api.secret=<producer_sr_api_secret_fast>

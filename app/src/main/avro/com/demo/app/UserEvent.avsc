@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "name": "UserEvent",
+  "namespace": "com.demo.app",
+  "fields": [
+    {"name": "eventId",    "type": "string"},
+    {"name": "timestamp",  "type": "long"},
+    {"name": "payload",    "type": "string"}
+  ]
+}

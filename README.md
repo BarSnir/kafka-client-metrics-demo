@@ -83,3 +83,89 @@ terraform output -json | jq '.'
 ```bash
 terraform destroy
 ```
+
+---
+
+## Running the Producers
+
+The producer is a Java Kafka client built with Gradle.  
+Two Gradle tasks run the **slow** (batched) and **fast** (unbatched) profiles simultaneously, each with its own dedicated service account, API keys, and JMX metrics port.
+
+| Profile | `linger.ms` | `batch.size` | JMX port |
+|---|---|---|---|
+| **SLOW** | 2000 ms | 1 MB | 9091 |
+| **FAST** | 0 ms | 5000 bytes | 9092 |
+
+### Prerequisites
+
+- JDK 11+
+- Gradle (or use the included `./gradlew` wrapper)
+- Docker (for the monitoring stack)
+
+### 1. Create your config file
+
+Copy the example file and fill in the values from `terraform output -json`:
+
+```bash
+cp config/producer.properties.example config/producer.properties
+```
+
+Edit `config/producer.properties` and replace the `<...>` placeholders:
+
+| Placeholder | Terraform output key |
+|---|---|
+| `<bootstrap_server>` | `bootstrap_server` |
+| `<schema_registry_url>` | `schema_registry_url` |
+| `<producer_api_key_slow>` | `producer_api_key_slow` |
+| `<producer_api_secret_slow>` | `producer_api_secret_slow` |
+| `<producer_sr_api_key_slow>` | `producer_sr_api_key_slow` |
+| `<producer_sr_api_secret_slow>` | `producer_sr_api_secret_slow` |
+| `<producer_api_key_fast>` | `producer_api_key_fast` |
+| `<producer_api_secret_fast>` | `producer_api_secret_fast` |
+| `<producer_sr_api_key_fast>` | `producer_sr_api_key_fast` |
+| `<producer_sr_api_secret_fast>` | `producer_sr_api_secret_fast` |
+
+> `config/producer.properties` is gitignored — it will never be committed.
+
+### 2. Build the project
+
+```bash
+./gradlew build
+```
+
+### 3. Start the monitoring stack
+
+```bash
+docker compose up -d
+```
+
+This starts:
+- **Prometheus** at http://localhost:9090 — scrapes JMX metrics from both producers
+- **Grafana** at http://localhost:3000 (admin / admin) — pre-provisioned dashboard
+
+### 4. Run both producers in parallel
+
+Open two terminal windows and run one task in each:
+
+**Terminal 1 — slow producer (batched)**
+```bash
+./gradlew :app:runProducerSlow
+```
+
+**Terminal 2 — fast producer (unbatched)**
+```bash
+./gradlew :app:runProducerFast
+```
+
+Both producers run indefinitely and expose JMX metrics for Prometheus to scrape.  
+Open the Grafana dashboard to observe the differences live.
+
+### Key metrics to watch
+
+| Metric | SLOW | FAST |
+|---|---|---|
+| `kafka_producer_batch_size_avg_bytes` | High (~1 MB) | Low (~5 KB) |
+| `kafka_producer_records_per_request_avg` | High | 1 |
+| `kafka_producer_record_queue_time_avg_ms` | ~2000 ms | ~0 ms |
+| `kafka_producer_request_rate` | Low | High |
+| `kafka_producer_outgoing_byte_rate` | Similar | Similar |
