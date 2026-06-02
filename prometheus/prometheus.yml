@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+# scrape_configs:
+#   - job_name: 'kafka-apps'
+#     static_configs:
+#       - targets: ['producer-slow:8081']
+#         labels:
+#           app: 'producer'
+#           profile: 'slow'
+#       - targets: ['producer-fast:8082']
+#         labels:
+#           app: 'producer'
+#           profile: 'fast'
+#       - targets: ['consumer-slow:8083']
+#         labels:
+#           app: 'consumer'
+#           profile: 'slow'
+#       - targets: ['consumer-fast:8084']
+#         labels:
+#           app: 'consumer'
+#           profile: 'fast'
