@@ -191,7 +191,7 @@ resource "confluent_kafka_acl" "bsnir_producer_write_topic_slow" {
   host          = "*"
   operation     = "WRITE"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret
@@ -210,7 +210,7 @@ resource "confluent_kafka_acl" "bsnir_producer_write_topic_fast" {
   host          = "*"
   operation     = "WRITE"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret
@@ -254,7 +254,7 @@ resource "confluent_kafka_acl" "bsnir_consumer_read_topic_slow" {
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret
@@ -268,12 +268,12 @@ resource "confluent_kafka_acl" "bsnir_consumer_read_group_slow" {
   rest_endpoint = confluent_kafka_cluster.bsnir_standard_cluster.rest_endpoint
   resource_type = "GROUP"
   resource_name = "slow-group"
-  pattern_type  = "LITERAL"
+  pattern_type  = "PREFIXED"
   principal     = "User:${confluent_service_account.bsnir_consumer_sa_slow.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret
@@ -314,7 +314,7 @@ resource "confluent_kafka_acl" "bsnir_consumer_read_topic_fast" {
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret
@@ -328,12 +328,12 @@ resource "confluent_kafka_acl" "bsnir_consumer_read_group_fast" {
   rest_endpoint = confluent_kafka_cluster.bsnir_standard_cluster.rest_endpoint
   resource_type = "GROUP"
   resource_name = "fast-group"
-  pattern_type  = "LITERAL"
+  pattern_type  = "PREFIXED"
   principal     = "User:${confluent_service_account.bsnir_consumer_sa_fast.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
-  
+
   credentials {
     key    = confluent_api_key.bsnir_env_manager_kafka_key.id
     secret = confluent_api_key.bsnir_env_manager_kafka_key.secret

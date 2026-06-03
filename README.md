@@ -169,3 +169,74 @@ Open the Grafana dashboard to observe the differences live.
 | `kafka_producer_record_queue_time_avg_ms` | ~2000 ms | ~0 ms |
 | `kafka_producer_request_rate` | Low | High |
 | `kafka_producer_outgoing_byte_rate` | Similar | Similar |
+
+---
+
+## Running the Consumers
+
+The consumer demo uses the same topic and credentials model, but the profiles are tuned to make fetch behavior diverge.  
+The slow consumer waits longer and asks for more bytes before returning; the fast consumer returns quickly with much smaller fetches.
+
+| Profile | `fetch.min.bytes` | `fetch.max.wait.ms` | `max.partition.fetch.bytes` | JMX port |
+|---|---|---|---|---|
+| **SLOW** | 1 MB | 5000 ms | 1 MB | 9093 |
+| **FAST** | 1 byte | 50 ms | 64 KB | 9094 |
+
+> Kafka does not expose a `fetch.min.bytes.per.partition` setting. The closest per-partition knob is `max.partition.fetch.bytes`, which is why the demo uses that property instead.
+
+### 1. Create your consumer config file
+
+Copy the example file and fill in the values from `terraform output -json`:
+
+```bash
+cp config/consumer.properties.example config/consumer.properties
+```
+
+Edit `config/consumer.properties` and replace the `<...>` placeholders:
+
+| Placeholder | Terraform output key |
+|---|---|
+| `<bootstrap_server>` | `bootstrap_server` |
+| `<schema_registry_url>` | `schema_registry_url` |
+| `<consumer_api_key_slow>` | `consumer_api_key_slow` |
+| `<consumer_api_secret_slow>` | `consumer_api_secret_slow` |
+| `<consumer_sr_api_key_slow>` | `consumer_sr_api_key_slow` |
+| `<consumer_sr_api_secret_slow>` | `consumer_sr_api_secret_slow` |
+| `<consumer_api_key_fast>` | `consumer_api_key_fast` |
+| `<consumer_api_secret_fast>` | `consumer_api_secret_fast` |
+| `<consumer_sr_api_key_fast>` | `consumer_sr_api_key_fast` |
+| `<consumer_sr_api_secret_fast>` | `consumer_sr_api_secret_fast` |
+
+> `config/consumer.properties` is gitignored — it will never be committed.
+
+### 2. Build the project
+
+```bash
+./gradlew build
+```
+
+### 3. Run both consumers in parallel
+
+Open two terminal windows and run one task in each:
+
+**Terminal 1 — slow consumer**
+```bash
+./gradlew :app:runConsumerSlow
+```
+
+**Terminal 2 — fast consumer**
+```bash
+./gradlew :app:runConsumerFast
+```
+
+This exposes consumer fetch metrics on ports `9093` and `9094`, which Prometheus scrapes automatically.
+
+### Key metrics to watch
+
+| Metric | SLOW | FAST |
+|---|---|---|
+| `kafka_consumer_fetch_rate` | Low | High |
+| `kafka_consumer_records_per_request_avg` | High | Lower |
+| `kafka_consumer_fetch_size_avg_bytes` | High | Low |
+| `kafka_consumer_fetch_latency_avg_ms` | Close to 5000 ms | Close to 50 ms |
+| `kafka_consumer_bytes_consumed_rate` | Similar | Similar |

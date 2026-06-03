@@ -1,0 +1,56 @@
+startDelaySeconds: 0
+ssl: false
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+
+rules:
+  # ── Fetch sizing ─────────────────────────────────────────────────────────
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-size-avg'
+    name: kafka_consumer_fetch_size_avg_bytes
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-size-max'
+    name: kafka_consumer_fetch_size_max_bytes
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>records-per-request-avg'
+    name: kafka_consumer_records_per_request_avg
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  # ── Fetch latency / wait time ────────────────────────────────────────────
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-latency-avg'
+    name: kafka_consumer_fetch_latency_avg_ms
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-latency-max'
+    name: kafka_consumer_fetch_latency_max_ms
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  # ── Request rate / throughput ────────────────────────────────────────────
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-rate'
+    name: kafka_consumer_fetch_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>bytes-consumed-rate'
+    name: kafka_consumer_bytes_consumed_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>records-consumed-rate'
+    name: kafka_consumer_records_consumed_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE

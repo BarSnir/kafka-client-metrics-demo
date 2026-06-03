@@ -1,0 +1,32 @@
+# =========================================================================
+# Consumer Config — copy to consumer.properties and fill in your values
+# Run: terraform output -json | jq '.'
+# =========================================================================
+
+# Profile to run: SLOW | FAST
+profile=SLOW
+
+# ---- Connection ----
+bootstrap.servers=<bootstrap_server>
+schema.registry.url=<schema_registry_url>
+topic=user-events
+
+# ---- Security (shared) ----
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+
+# ---- Deserializers ----
+key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+value.deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+# ---- Slow Consumer Credentials ----
+slow.kafka.api.key=<consumer_api_key_slow>
+slow.kafka.api.secret=<consumer_api_secret_slow>
+slow.sr.api.key=<consumer_sr_api_key_slow>
+slow.sr.api.secret=<consumer_sr_api_secret_slow>
+
+# ---- Fast Consumer Credentials ----
+fast.kafka.api.key=<consumer_api_key_fast>
+fast.kafka.api.secret=<consumer_api_secret_fast>
+fast.sr.api.key=<consumer_sr_api_key_fast>
+fast.sr.api.secret=<consumer_sr_api_secret_fast>

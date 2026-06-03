@@ -16,3 +16,17 @@ scrape_configs:
       - targets: ['host.docker.internal:9092']
         labels:
           profile: 'fast'
+
+  # SLOW consumer — JMX exporter on port 9093
+  - job_name: 'kafka-consumer-slow'
+    static_configs:
+      - targets: ['host.docker.internal:9093']
+        labels:
+          profile: 'slow'
+
+  # FAST consumer — JMX exporter on port 9094
+  - job_name: 'kafka-consumer-fast'
+    static_configs:
+      - targets: ['host.docker.internal:9094']
+        labels:
+          profile: 'fast'
