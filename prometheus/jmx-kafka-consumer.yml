@@ -4,6 +4,31 @@ lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 
 rules:
+  # ── Client-level metrics (kafka.consumer:type=consumer-metrics) ──────────
+  - pattern: 'kafka\.consumer<type=consumer-metrics, client-id=(.+)><>request-rate'
+    name: kafka_consumer_request_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-metrics, client-id=(.+)><>incoming-byte-rate'
+    name: kafka_consumer_incoming_byte_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-metrics, client-id=(.+)><>outgoing-byte-rate'
+    name: kafka_consumer_outgoing_byte_rate
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
+  - pattern: 'kafka\.consumer<type=consumer-metrics, client-id=(.+)><>connection-count'
+    name: kafka_consumer_connection_count
+    labels:
+      client_id: "$1"
+    type: GAUGE
+
   # ── Fetch sizing ─────────────────────────────────────────────────────────
   - pattern: 'kafka\.consumer<type=consumer-fetch-manager-metrics, client-id=(.+)><>fetch-size-avg'
     name: kafka_consumer_fetch_size_avg_bytes
